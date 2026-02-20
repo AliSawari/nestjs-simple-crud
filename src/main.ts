@@ -3,6 +3,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -44,7 +45,9 @@ async function bootstrap() {
     },
   });
 
+  const configService = new ConfigService()
+  const apiPort: number = configService.get('API_PORT') | 8080
 
-  await app.listen(8080, '0.0.0.0');
+  await app.listen(apiPort, '0.0.0.0');
 }
 bootstrap();
