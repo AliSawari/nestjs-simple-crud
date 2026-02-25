@@ -5,7 +5,7 @@ import { PostRepository } from './infrastructure/persistence/post.repository';
 import { POST_REPOSITORY } from './domain/post.repository.interface';
 import { PostsService } from './application/post.service';
 import { PostsController } from './presentation/post.controller';
-import { AppCacheModule } from '../common/cache/cache.module';
+import { AppCacheModule } from '../shared/infrastructure/cache/cache.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PostOrmEntity]), AppCacheModule],

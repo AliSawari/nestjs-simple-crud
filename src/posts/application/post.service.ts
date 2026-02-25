@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CacheService } from '../../common/cache/cache.service';
+import { CacheService } from '../../shared/infrastructure/cache/cache.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from '../domain/post.entity';
