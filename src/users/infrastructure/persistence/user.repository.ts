@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserOrmEntity } from './user-orm.entity';
 import { User } from '../../domain/user.entity';
-import type { IUserRepository } from 'src/users/domain/user.repository.interface';
+import type { IUserRepository } from '../../domain/user.repository.interface';
 
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 
@@ -28,7 +28,7 @@ export class UserRepository implements IUserRepository {
     return this.repo.findOne({where: { id }});
   }
 
-  save(user:User): Promise<User | null>{
+  save(user:User): Promise<User>{
     return this.repo.save(user);
   }
 }

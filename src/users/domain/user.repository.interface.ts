@@ -9,7 +9,7 @@ export interface IUserRepository {
   findOne?(id: number): Promise<User | null>;
   findById?(id: number): Promise<User | null>;
   create(email:string, pahashedPassword: string): Promise<User>;
-  save(user:User): Promise<any>;
+  save(user:User): Promise<User>;
   // for now we dont update or delete users
   // update(id: number, dto: UpdatePostDto): Promise<Post>;
   // delete(id: number): Promise<void>;

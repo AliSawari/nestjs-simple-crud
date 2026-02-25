@@ -6,7 +6,7 @@ export const POST_REPOSITORY = 'POST_REPOSITORY';
 
 export interface IPostRepository {
   find?(): Promise<Post[]>;
-  findAll?(): Promise<Post[]>;
+  findAll(): Promise<Post[]>;
   findOne?(id: number): Promise<Post | null>;
   findById(id: number): Promise<Post | null>;
   create(dto: CreatePostDto): Promise<Post>;

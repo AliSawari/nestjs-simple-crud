@@ -3,6 +3,8 @@ import { CacheService } from '../../common/cache/cache.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from '../domain/post.entity';
+import type { IPostRepository } from '../domain/post.repository.interface';
+import { POST_REPOSITORY } from '../domain/post.repository.interface';
 import { PostRepository } from '../infrastructure/persistence/post.repository';
 
 const CACHE_KEYS = {

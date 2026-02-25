@@ -5,13 +5,14 @@ import { PostRepository } from './infrastructure/persistence/post.repository';
 import { POST_REPOSITORY } from './domain/post.repository.interface';
 import { PostsService } from './application/post.service';
 import { PostsController } from './presentation/post.controller';
+import { AppCacheModule } from '../common/cache/cache.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PostOrmEntity])],
+  imports: [TypeOrmModule.forFeature([PostOrmEntity]), AppCacheModule],
   controllers: [PostsController],
   providers: [
-    { provide: POST_REPOSITORY, useClass: PostRepository },
+    PostRepository,
     PostsService,
   ],
 })
-export class PostsModule {}
+export class PostsModule { }
