@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PostsService } from './posts.service';
-import { CreatePostDto } from './dtos/create-post.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
-import { JwtAuthGuard } from '../common/guards/jwt.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt.guard';
+import { PostsService } from '../application/posts.service';
+import { CreatePostDto } from '../application/dto/create-post.dto';
+import { UpdatePostDto } from '../application/dto/update-post.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -12,24 +12,24 @@ export class PostsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
-  @ApiResponse({ status: 200, description: 'List of all posts' })
+  @ApiResponse({ status: 200 })
   findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get a single post by ID' })
-  @ApiResponse({ status: 200, description: 'The post data' })
+  @ApiOperation({ summary: 'Get post by ID' })
+  @ApiResponse({ status: 200 })
   @ApiResponse({ status: 404, description: 'Post not found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.findOne(id);
+    return this.postsService.findById(id);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'Create a new post' })
-  @ApiResponse({ status: 201, description: 'Post created successfully' })
+  @ApiOperation({ summary: 'Create a post' })
+  @ApiResponse({ status: 201 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(@Body() dto: CreatePostDto) {
     return this.postsService.create(dto);
@@ -39,7 +39,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update a post' })
-  @ApiResponse({ status: 200, description: 'Post updated successfully' })
+  @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdatePostDto) {
@@ -50,10 +50,10 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete a post' })
-  @ApiResponse({ status: 200, description: 'Post deleted successfully' })
+  @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.remove(id);
+    return this.postsService.delete(id);
   }
 }

@@ -1,10 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Post } from './posts.entity';
-import { CreatePostDto } from './dtos/create-post.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
-import { CacheService } from '../common/cache/cache.service';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CacheService } from '../../common/cache/cache.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { Post } from '../domain/post.entity';
+import { PostRepository } from '../infrastructure/persistence/post.repository';
 
 const CACHE_KEYS = {
   allPosts: 'posts:all',
@@ -14,25 +13,24 @@ const CACHE_KEYS = {
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepo: Repository<Post>,
+    private readonly postRepository: PostRepository,
     private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Post[]> {
     const cached = await this.cacheService.get<Post[]>(CACHE_KEYS.allPosts);
     if (cached) return cached;
 
-    const posts = await this.postRepo.find({ order: { createdAt: 'DESC' } });
+    const posts = await this.postRepository.findAll();
     await this.cacheService.set(CACHE_KEYS.allPosts, posts);
     return posts;
   }
 
-  async findOne(id: number): Promise<Post> {
+  async findById(id: number): Promise<Post> {
     const cached = await this.cacheService.get<Post>(CACHE_KEYS.post(id));
     if (cached) return cached;
 
-    const post = await this.postRepo.findOne({ where: { id } });
+    const post = await this.postRepository.findById(id);
     if (!post) throw new NotFoundException(`Post ${id} not found`);
 
     await this.cacheService.set(CACHE_KEYS.post(id), post);
@@ -40,30 +38,22 @@ export class PostsService {
   }
 
   async create(dto: CreatePostDto): Promise<Post> {
-    const post = this.postRepo.create(dto);
-    const saved = await this.postRepo.save(post);
-
+    const post = await this.postRepository.create(dto);
     await this.cacheService.del(CACHE_KEYS.allPosts);
-    return saved;
+    return post;
   }
 
   async update(id: number, dto: UpdatePostDto): Promise<Post> {
-    const post = await this.findOne(id);
-    Object.assign(post, dto);
-    const updated = await this.postRepo.save(post);
-
+    const post = await this.postRepository.update(id, dto);
     await Promise.all([
       this.cacheService.del(CACHE_KEYS.post(id)),
       this.cacheService.del(CACHE_KEYS.allPosts),
     ]);
-
-    return updated;
+    return post;
   }
 
-  async remove(id: number): Promise<void> {
-    const post = await this.findOne(id);
-    await this.postRepo.remove(post);
-
+  async delete(id: number): Promise<void> {
+    await this.postRepository.delete(id);
     await Promise.all([
       this.cacheService.del(CACHE_KEYS.post(id)),
       this.cacheService.del(CACHE_KEYS.allPosts),
