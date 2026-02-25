@@ -12,13 +12,8 @@ export class PostRepository implements IPostRepository {
   constructor(
     @InjectRepository(PostOrmEntity)
     private readonly repo: Repository<PostOrmEntity>,
-  ) {}
-  find(dto: any): Promise<Post[]> {
-    throw new Error('Method not implemented.');
-  }
-  findOne?(id: number): Promise<Post | null> {
-    throw new Error('Method not implemented.');
-  }
+  ) { }
+
 
   findAll(): Promise<Post[]> {
     return this.repo.find({ order: { createdAt: 'DESC' } });

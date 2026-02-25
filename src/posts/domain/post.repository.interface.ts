@@ -5,8 +5,8 @@ import { UpdatePostDto } from '../application/dto/update-post.dto';
 export const POST_REPOSITORY = 'POST_REPOSITORY';
 
 export interface IPostRepository {
-  find(dto:any): Promise<Post[]>;
-  findAll(): Promise<Post[]>;
+  find?(): Promise<Post[]>;
+  findAll?(): Promise<Post[]>;
   findOne?(id: number): Promise<Post | null>;
   findById(id: number): Promise<Post | null>;
   create(dto: CreatePostDto): Promise<Post>;
