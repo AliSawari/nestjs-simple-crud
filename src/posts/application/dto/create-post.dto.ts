@@ -15,9 +15,9 @@ export class CreatePostDto {
   @MinLength(10)
   content: string;
 
-  @ApiPropertyOptional({ example: 'John', description: 'Author name' })
-  @IsString()
-  @IsOptional()
-  @MaxLength(100)
-  author?: string;
+  // @ApiPropertyOptional({ example: 'John', description: 'Author name' })
+  // @IsString()
+  // @IsOptional()
+  // @MaxLength(100)
+  // author?: string;
 }

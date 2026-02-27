@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UserOrmEntity } from 'src/users/infrastructure/persistence/user-orm.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('posts')
 export class PostOrmEntity {
@@ -11,8 +12,10 @@ export class PostOrmEntity {
   @Column('text')
   content: string;
 
-  @Column({ default: 'anonymous' })
-  author: string;
+  
+  @ManyToOne(() => UserOrmEntity, (user) => user.posts, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId' })
+  author: UserOrmEntity;
 
   @CreateDateColumn()
   createdAt: Date;

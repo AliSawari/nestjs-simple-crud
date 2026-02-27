@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PostOrmEntity } from 'src/posts/infrastructure/persistence/post-orm.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class UserOrmEntity {
@@ -16,4 +17,7 @@ export class UserOrmEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(() => PostOrmEntity, (post) => post.author)
+  posts: PostOrmEntity[];
 }

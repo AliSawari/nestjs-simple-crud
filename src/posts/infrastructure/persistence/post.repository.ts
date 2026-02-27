@@ -6,6 +6,11 @@ import { IPostRepository } from '../../domain/post.repository.interface';
 import { Post } from '../../domain/post.entity';
 import { CreatePostDto } from '../../application/dto/create-post.dto';
 import { UpdatePostDto } from '../../application/dto/update-post.dto';
+import { User } from 'src/users/domain/user.entity';
+import { UserOrmEntity } from 'src/users/infrastructure/persistence/user-orm.entity';
+import { PostResponse } from 'src/posts/application/dto/response-post.dto';
+
+const SAFE_FIELDS: any = ['content', 'createdAt', 'title', 'updatedAt', 'id']
 
 @Injectable()
 export class PostRepository implements IPostRepository {
@@ -20,7 +25,15 @@ export class PostRepository implements IPostRepository {
   }
 
   findById(id: number): Promise<Post | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: { author: true } });
+  }
+
+  findAllSafe(): Promise<Post[]> {
+    return this.repo.find({ select: SAFE_FIELDS,  order: { createdAt: 'DESC' } })
+  }
+
+  findOneSafe(id: number): Promise<Post | null> {
+    return this.repo.findOne({ where: { id }, select: SAFE_FIELDS })
   }
 
   create(dto: CreatePostDto): Promise<Post> {
