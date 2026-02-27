@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../shared/application/guards/jwt.guard';
 import { PostsService } from '../application/post.service';
@@ -8,13 +8,20 @@ import { UpdatePostDto } from '../application/dto/update-post.dto';
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200 })
   findAll() {
     return this.postsService.findAll();
+  }
+
+  @Get('/search')
+  @ApiOperation({ summary: 'Search posts by title' })
+  @ApiResponse({ status: 200 })
+  findByTitle(@Query('title') title: string) {
+    return this.postsService.findByTitle(title);
   }
 
   @Get(':id')
@@ -31,7 +38,7 @@ export class PostsController {
   @ApiOperation({ summary: 'Create a post' })
   @ApiResponse({ status: 201 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  create(@Body() dto: CreatePostDto, @Req() request:any) {
+  create(@Body() dto: CreatePostDto, @Req() request: any) {
     return this.postsService.create(dto, request.user);
   }
 
@@ -42,7 +49,7 @@ export class PostsController {
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Post not found' })
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdatePostDto, @Req() request:any) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdatePostDto, @Req() request: any) {
     return this.postsService.update(id, dto, request.user);
   }
 
@@ -53,7 +60,7 @@ export class PostsController {
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Post not found' })
-  remove(@Param('id', ParseIntPipe) id: number, @Req() request:any) {
+  remove(@Param('id', ParseIntPipe) id: number, @Req() request: any) {
     return this.postsService.delete(id, request.user);
   }
 }

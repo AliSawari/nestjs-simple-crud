@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { PostOrmEntity } from './post-orm.entity';
 import { IPostRepository } from '../../domain/post.repository.interface';
 import { Post } from '../../domain/post.entity';
@@ -30,6 +30,10 @@ export class PostRepository implements IPostRepository {
 
   findAllSafe(): Promise<Post[]> {
     return this.repo.find({ select: SAFE_FIELDS,  order: { createdAt: 'DESC' } })
+  }
+
+  findByTitleSafe(title:string): Promise<Post[]> {
+    return this.repo.find({ where: { title: ILike(`%${title}%`) }, select: SAFE_FIELDS,  order: { createdAt: 'DESC' } })
   }
 
   findOneSafe(id: number): Promise<Post | null> {

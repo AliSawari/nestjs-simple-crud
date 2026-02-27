@@ -90,4 +90,9 @@ export class PostsService {
     return new NotFoundException(post, { description: 'Post not found' });
 
   }
+
+
+  async findByTitle(title: string) {
+    return this.postRepository.findByTitleSafe(title);
+  }
 }
